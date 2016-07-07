@@ -1,0 +1,3 @@
+usersetup ALL=NOPASSWD: /usr/bin/restrict_groupadd.sh
+usersetup ALL=NOPASSWD: /usr/bin/restrict_useradd.sh
+usersetup ALL = (zephyruser) NOPASSWD:SETENV: /usr/bin/zephyr-launch.py
