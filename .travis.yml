@@ -1,0 +1,23 @@
+language: python
+python:
+  - "2.7"
+
+sudo: required
+services:
+  - docker
+
+services:
+    - docker
+
+before_install:
+  # list docker-engine versions
+  - apt-cache madison docker-engine
+
+script:
+  - docker version
+
+notifications:
+  email:
+    recipients:
+    on_success: change
+    on_failure: always
