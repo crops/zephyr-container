@@ -22,13 +22,14 @@
 
 import argparse
 import os
+import shlex
 
 zephyr_default = 'https://gerrit.zephyrproject.org/r/zephyr '
 parser = argparse.ArgumentParser(epilog="NOTE: The --workdir is the path as "
     "seen inside of the container. So if -v /foo:/bar was passed"
     "to docker, --workdir should be set to /bar.")
 
-parser.add_argument("--git", default = zephyr_default, help="git repository containing zephyr kernel")
+parser.add_argument("--git", nargs='+', help="git repository containing zephyr kernel")
 parser.add_argument("--workdir", default='/workdir',
     help="Directory containing the zephyr kernel. "
     "Or the location to download the kernel sources to if --git is specfied.")
@@ -36,11 +37,14 @@ parser.add_argument("--workdir", default='/workdir',
 args = parser.parse_args()
 
 if args.git:
-    gitarg = "--git={}".format(args.git)
+    gitarg = "--git=" + '"' + (' '.join(args.git)).replace(" ", ":|") + '"'
 else:
     gitarg = ""
 
 cmd = """usersetup.py --username=zephyruser --workdir={} zephyr-launch.py {} """\
       """--workdir={}"""
-cmd = cmd.format(args.workdir, gitarg, args.workdir).split()
+cmd = cmd.format(args.workdir, gitarg, args.workdir)
+cmd = shlex.shlex(cmd, posix=True)
+cmd.whitespace_split = True
+cmd = list(cmd)
 os.execvp(cmd[0], cmd)

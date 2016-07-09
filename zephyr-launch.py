@@ -20,29 +20,34 @@ import argparse
 import os
 import sys
 import subprocess
+import shlex
 
 class OstroLaunchError(Exception):
     pass
 
 def clone_zephyr(url, dest):
-    cmd = "git clone {} {}".format(url, dest).split()
-
+    cmd = "git clone {}".format(url)
+    cmd = shlex.shlex(cmd, posix=True)
+    cmd.whitespace_split = True
+    cmd = list(cmd)
     try:
         print "Attempting to clone {}".format(url)
-        subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
+        subprocess.check_call(cmd, cwd=dest, stdout=sys.stdout, stderr=sys.stderr)
     except subprocess.CalledProcessError:
-        errormsg = 'Unable to clone "{}".'.format(args.url)
+        errormsg = 'Unable to clone "{}".'.format(url)
         raise OstroLaunchError(errormsg)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--git", help="git repo with zephyr kernel source")
+parser.add_argument("--git", nargs='+', help="git repo with zephyr kernel source")
 parser.add_argument("--workdir", default='/workdir',
                     help="Directory containing the zephyr kernel source. "
                          "Or the location to prepare the git repo"
                          "if --git was specfied.")
 
 args = parser.parse_args()
+if args.git is not None:
+    args.git = (','.join(args.git)).replace(":|", " ")
 
 try:
     if not os.path.exists(args.workdir):
@@ -50,25 +55,21 @@ try:
 
     zephyrfound = os.path.exists(os.path.join(args.workdir,".git"))
 
-    if zephyrfound and args.git:
+    if zephyrfound and args.git is not None:
         errormsg = ('A git repository was found in {} yet "--git" was also '
                     'specified. Cowardly refusing to overwrite existing repo.')
         errormsg = errormsg.format(args.workdir)
         print(errormsg)
 
-    elif not zephyrfound and not args.git:
-        errormsg = ('A zephyr git repository was not found in {}. "--git"'
-                    'must be specified.')
-        errormsg = errormsg.format(args.workdir)
-        raise OstroLaunchError(errormsg)
+    elif not zephyrfound and args.git is None:
+        errormsg = ('You need to check out a zephyr kernel to build zephyr apps, e.g. git clone https://gerritt.zephyrproject.org/r/zephyr')
+        print(errormsg)
 
-    elif not zephyrfound and args.git:
+    elif not zephyrfound and args.git is not None:
         clone_zephyr(args.git, args.workdir)
 
-    # Source the environment setup script and run bash
     cmd = 'bash -c'.split()
     args = 'cd {}; exec bash -i'.format(args.workdir)
-    os.environ["LC_CTYPE"] = "en_US.UTF-8"
     os.execvp(cmd[0], cmd + [args])
 
 except OstroLaunchError as e:
