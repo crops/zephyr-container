@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+set -o pipefail
+
+# This is a sanity test script for the zephyr-container Docker image
+# This script removes the old test images and builds a new one
+
+TOPDIR=`git rev-parse --show-toplevel`
+
+# remove zephyr-container image as we will rebuild it
+Q=`docker images | awk '$1 ~ /crops[/]zephyr-container/ { print $3 }'`
+if [ "$Q" != "" ]; then
+  echo "Removing zephyr-container images"
+  Q=`docker rmi -f $(docker images | awk '$1 ~ /crops[/]zephyr-container/ { print $3 }')`
+fi
+
+cd ${TOPDIR};
+echo "Build Zephyr container image"
+docker build -t crops/zephyr-container -f Dockerfile --rm=true .
