@@ -1,0 +1,8 @@
+# This is a convenience script which monitors the progress of the
+# Zephyr kernel git clone operation
+
+pid=$(ps -opid= -C git | tr -d '[:space:]' )
+while [[ -d /proc/$pid ]] ; do
+  sleep 1
+  echo "Zephyr clone in progress.. Please Wait!"
+done

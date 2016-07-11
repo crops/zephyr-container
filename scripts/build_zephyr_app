@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+set -o pipefail
+
+# This is a convenience script to prepare the Zephyr kernel environment
+
+echo "Clone Zephyr repository"
+docker run --name zephyr-test -ti -d -v $HOME:/workdir crops/zephyr-container --git "https://gerrit.zephyrproject.org/r/zephyr zephyr-src"
+
+echo "Import clone watcher script inside the container"
+docker cp ./scripts/wait_for_clone zephyr-test:/usr/bin/
+
+echo "Waiting for clone operation to complete"
+docker exec -u zephyruser zephyr-test bash -c "/usr/bin/wait_for_clone"
+
+echo "Copy Zephyr application out of the original tree"
+docker exec -u zephyruser zephyr-test bash -c "cp -rfp /workdir/zephyr-src/samples/hello_world /tmp/hello_world"
+
+echo "Build Zephyr application"
+docker exec -u zephyruser zephyr-test bash -c "source /workdir/zephyr-src/zephyr-env.sh && cd /tmp/hello_world && make"
+
+echo "Verify that the Zephyr application binary exists"
+docker exec -u zephyruser zephyr-test bash -c "ls /tmp/hello_world/outdir/qemu_x86/zephyr.bin"
+
