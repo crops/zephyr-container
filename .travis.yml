@@ -6,17 +6,21 @@ sudo: required
 services:
   - docker
 
-services:
-    - docker
+env:
+  global:
+    - REPO=crops/zephyr-container
 
 before_install:
-  # list docker-engine versions
+  # list available docker-engine versions
   - apt-cache madison docker-engine
 
 script:
   - docker version
   - ./scripts/build_zephyr_container
   - ./scripts/build_zephyr_app
+
+after_success:
+  - bash deploy.sh
 
 notifications:
   email:
