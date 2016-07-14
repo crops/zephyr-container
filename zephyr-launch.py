@@ -55,17 +55,11 @@ try:
 
     zephyrfound = os.path.exists(os.path.join(args.workdir,"zephyr"))
 
-    if zephyrfound and args.git is not None:
-        errormsg = ('A git repository was found in {} yet "--git" was also '
-                    'specified. Cowardly refusing to overwrite existing repo.')
-        errormsg = errormsg.format(args.workdir)
-        print(errormsg)
-
-    elif not zephyrfound and args.git is None:
+    if not zephyrfound and args.git is None:
         errormsg = ('You need to check out a zephyr kernel to build zephyr apps, e.g. git clone https://gerrit.zephyrproject.org/r/zephyr')
         print(errormsg)
 
-    elif not zephyrfound and args.git is not None:
+    elif args.git is not None:
         clone_zephyr(args.git, args.workdir)
 
     cmd = 'bash -c'.split()
