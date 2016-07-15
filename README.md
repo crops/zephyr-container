@@ -25,32 +25,42 @@ Running the container
 
   ```
   docker run --rm -it -v /home/myuser/workdir:/workdir crops/zephyr-container \
-  --git http://some/git/repo.git
+  --git "-b branch_name http://some/git/repo.git target_directory"
   ```
   Let's discuss some of the options:
   * **-v /home/myuser/workdir:/workdir**: The default location of the workdir
     inside of the container is /workdir. So this part of the command says to
     use */home/myuser/workdir* as */workdir* inside the container.
-  * **--git http://some/git/repo.git**: This is the
-    url of the Zephyr OS git repo. The kernel source will automatically be
-    downloaded and prepared to use inside of the workdir. Substitute in the
-    url for whatever Zephyr OS git repo you want to use.
+  * **--git "-b branch_name http://some/git/repo.git target_directory"**:
+    This is the url of the Zephyr OS git repo. The kernel source will be
+    automatically downloaded and prepared to use inside of the
+    target_directory.
+    Substitute in the url, branche_name and target_directory  for whatever
+    Zephyr OS git repo, branch and directory you want to use.
 
   You should see output similar to the following:
 
   ```
-  Attempting to clone https://gerrit.zephyrproject.org/r/zephyr
-  Cloning into '/workdir'...
-  remote: Counting objects: 4674, done
-  remote: Finding sources: 100% (404/404)
-  remote: Total 93496 (delta 36), reused 93270 (delta 36)
-  Receiving objects: 100% (93496/93496), 32.60 MiB | 2.87 MiB/s, done.
-  Resolving deltas: 100% (61789/61789), done.
+  $docker run --rm -it -v /home/user/zephyr-build/:/workdir crops/zephyr-container --git "-b master https://gerrit.zephyrproject.org/r/zephyr zephyr-src"
+  Attempting to clone -b master https://gerrit.zephyrproject.org/r/zephyr zephyr-src
+  Cloning into 'zephyr-src'...
+  remote: Counting objects: 10518, done
+  remote: Finding sources: 100% (98219/98219)
+  remote: Total 98219 (delta 62422), reused 98006 (delta 62422)
+  Receiving objects: 100% (98219/98219), 39.75 MiB | 2.87 MiB/s, done.
+  Resolving deltas: 100% (62422/62422), done.
   Checking connectivity... done.
-  zephyruser@3f2d99cf9c8c:/workdir$
+  zephyruser@e6fc72513005:/workdir$
 
   ```
   At this point you should be able to use the shell to build Zephyr apps.
+
+  Source the project environment file to set the project environtment
+  variables:
+
+  ```
+  $ cd ./zephyr-src
+  ```
 
   Source the project environment file to set the project environtment
   variables:
