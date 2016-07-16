@@ -22,8 +22,8 @@ FROM crops/yocto:ubuntu-16.04-base
 USER root
 ENV ZEPHYR_GCC_VARIANT zephyr
 ENV ZEPHYR_SDK_INSTALL_DIR /opt/zephyr-sdk
-ENV ZEPHYR_SRC https://nexus.zephyrproject.org/content/repositories/releases/org/zephyrproject/zephyr-sdk/0.8.2-i686/zephyr-sdk-0.8.2-i686-setup.run
 
+ARG ZEPHYR_SRC
 
 ADD https://raw.githubusercontent.com/crops/extsdk-container/master/restrict_useradd.sh  \
     https://raw.githubusercontent.com/crops/extsdk-container/master/restrict_groupadd.sh \

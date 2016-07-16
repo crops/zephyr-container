@@ -5,7 +5,7 @@ set -o pipefail
 # This is a convenience script to prepare the Zephyr kernel environment
 
 echo "Clone Zephyr repository"
-docker run --name zephyr-test -ti -d -v $HOME:/workdir crops/zephyr-container --git "https://gerrit.zephyrproject.org/r/zephyr zephyr-src"
+docker run --name zephyr-test -ti -d -v $HOME:/workdir ${REPO}:${TAG} --git "-b ${BRANCH} https://gerrit.zephyrproject.org/r/zephyr zephyr-src"
 
 echo "Import clone watcher script inside the container"
 docker cp ./scripts/wait_for_clone zephyr-test:/usr/bin/

@@ -16,4 +16,4 @@ fi
 
 cd ${TOPDIR};
 echo "Build Zephyr container image"
-docker build -t crops/zephyr-container -f Dockerfile --rm=true .
+docker build --build-arg ZEPHYR_SRC="${ZEPHYR_SRC}" -t ${REPO}:${TAG} -f Dockerfile --rm=true .

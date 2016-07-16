@@ -22,7 +22,7 @@ import sys
 import subprocess
 import shlex
 
-class OstroLaunchError(Exception):
+class ZephyrLaunchError(Exception):
     pass
 
 def clone_zephyr(url, dest):
@@ -35,7 +35,7 @@ def clone_zephyr(url, dest):
         subprocess.check_call(cmd, cwd=dest, stdout=sys.stdout, stderr=sys.stderr)
     except subprocess.CalledProcessError:
         errormsg = 'Unable to clone "{}".'.format(url)
-        raise OstroLaunchError(errormsg)
+        raise ZephyrLaunchError(errormsg)
 
 parser = argparse.ArgumentParser()
 
@@ -66,5 +66,5 @@ try:
     args = 'cd {}; exec bash -i'.format(args.workdir)
     os.execvp(cmd[0], cmd + [args])
 
-except OstroLaunchError as e:
+except ZephyrLaunchError as e:
     print e

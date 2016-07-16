@@ -2,13 +2,20 @@ Zephyr Build Container
 ========================
 This repo is to create an image that is able to setup and use a Zephyr build environment.
 
+The instructions will be slightly different depending on whether Linux, Windows or Mac is used. There are setup instructions for using **Windows/Mac** at https://github.com/crops/docker-win-mac-docs/wiki. When referring to **Windows/Mac** in the rest of the document, it is assumed the instructions at https://github.com/crops/docker-win-mac-docs/wiki were followed.
+
 Running the container
 ---------------------
-* **Determine the workdir**
+* **Create workdir or volume**
+  * **Linux**
 
-  The workdir you create will be used for all output from the Zephyr  build
+  The workdir you create will be used for all output from the Zephyr build
   system as well as where your workspace will be saved. You can either
   create a new directory or use an existing one.
+
+  ```
+  mkdir -p /home/myuser/workdir
+  ```
 
   *It is important that you are the owner of the directory.* The owner of the
   directory is what determines the user id used inside the container. If you
@@ -18,7 +25,12 @@ Running the container
   For the rest of the instructions we'll assume the workdir chosen was
   `/home/myuser/workdir`.
 
+* **Windows/Mac**
+
+  On Windows or Mac a workdir isn't needed. Instead the volume called *myvolume* will be used. This volume should have been created when following the instructions at https://github.com/crops/docker-win-mac-docs/wiki.
+
 * **The docker command**
+  * **Linux**
 
   Assuming you used the *workdir* from above, the command
   to run a container for the first time would be:
@@ -27,21 +39,32 @@ Running the container
   docker run --rm -it -v /home/myuser/workdir:/workdir crops/zephyr-container \
   --git "-b branch_name http://some/git/repo.git target_directory"
   ```
+
+  * **Mac**
+
+  ```
+  docker run --rm -it -v myvolume:/workdir crops/zephyr-container \
+  --git "-b branch_name http://some/git/repo.git target_directory"
+  ```
+
+  * **Windows**
+
+  ```
+  docker run --rm -it -v myvolume:/workdir crops/zephyr-container \
+  --git "-b branch_name http://some/git/repo.git target_directory"
+  ```
+
   Let's discuss some of the options:
-  * **-v /home/myuser/workdir:/workdir**: The default location of the workdir
-    inside of the container is /workdir. So this part of the command says to
-    use */home/myuser/workdir* as */workdir* inside the container.
   * **--git "-b branch_name http://some/git/repo.git target_directory"**:
     This is the url of the Zephyr OS git repo. The kernel source will be
     automatically downloaded and prepared to use inside of the
     target_directory.
-    Substitute in the url, branche_name and target_directory  for whatever
+    Substitute in the url, branche_name and target_directory for whatever
     Zephyr OS git repo, branch and directory you want to use.
 
   You should see output similar to the following:
 
   ```
-  $docker run --rm -it -v /home/user/zephyr-build/:/workdir crops/zephyr-container --git "-b master https://gerrit.zephyrproject.org/r/zephyr zephyr-src"
   Attempting to clone -b master https://gerrit.zephyrproject.org/r/zephyr zephyr-src
   Cloning into 'zephyr-src'...
   remote: Counting objects: 10518, done

@@ -21,7 +21,11 @@ set -e
 # Don't deploy on pull requests
 if [ "${TRAVIS_PULL_REQUEST}" = "false" -a "${TRAVIS_BRANCH}" = "master" ]; then
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-    docker push ${REPO}
+    if [ "${LATEST}" = 1 ]; then
+        docker tag ${REPO}:${TAG} ${REPO}:latest
+        docker push ${REPO}:latest
+    fi
+    docker push ${REPO}:${TAG}
 else
     echo "Not pushing since build was triggered by a pull request."
 fi

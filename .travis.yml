@@ -7,6 +7,12 @@ services:
   - docker
 
 env:
+  matrix:
+    - ZEPHYR_SRC=https://nexus.zephyrproject.org/content/repositories/releases/org/zephyrproject/zephyr-sdk/0.8.2-i686/zephyr-sdk-0.8.2-i686-setup.run TAG="0.8.2" BRANCH="master" LATEST=1
+  # we are not running a test for 0.8.1, because the zephyr.bin binary
+  # cannot be generated out-of-tree with Zephyr 1.4.0
+  # - ZEPHYR_SRC=https://nexus.zephyrproject.org/content/repositories/releases/org/zephyrproject/zephyr-sdk/0.8.1-i686/zephyr-sdk-0.8.1-i686-setup.run TAG="0.8.1" BRANCH="v1.4.0"
+
   global:
     - REPO=crops/zephyr-container
 
