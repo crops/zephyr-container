@@ -53,7 +53,7 @@ try:
     if not os.path.exists(args.workdir):
         os.mkdir(args.workdir)
 
-    zephyrfound = os.path.exists(os.path.join(args.workdir,".git"))
+    zephyrfound = os.path.exists(os.path.join(args.workdir,"zephyr"))
 
     if zephyrfound and args.git is not None:
         errormsg = ('A git repository was found in {} yet "--git" was also '
@@ -62,7 +62,7 @@ try:
         print(errormsg)
 
     elif not zephyrfound and args.git is None:
-        errormsg = ('You need to check out a zephyr kernel to build zephyr apps, e.g. git clone https://gerritt.zephyrproject.org/r/zephyr')
+        errormsg = ('You need to check out a zephyr kernel to build zephyr apps, e.g. git clone https://gerrit.zephyrproject.org/r/zephyr')
         print(errormsg)
 
     elif not zephyrfound and args.git is not None:
