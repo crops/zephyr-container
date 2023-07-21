@@ -1,5 +1,9 @@
 Zephyr Build Container
 ========================
+
+> **Warning**
+> This repository is now deprecated in favor of https://github.com/zephyrproject-rtos/docker-image
+
 This repo is to create an image that is able to setup and use a Zephyr build environment.
 
 The instructions will be slightly different depending on whether Linux, Windows or Mac is used. There are setup instructions for using **Windows/Mac** at https://github.com/crops/docker-win-mac-docs/wiki. When referring to **Windows/Mac** in the rest of the document, it is assumed the instructions at https://github.com/crops/docker-win-mac-docs/wiki were followed.
